@@ -37,8 +37,8 @@
 #include <SPI.h>
 
 // TFT: Libraries
-#include <Adafruit_GFX.h>    // Adafruit Grafik-Bibliothek wird benötigt
-#include <Adafruit_ST7735.h> // Adafruit ST7735-Bibliothek wird benötigt
+#include <Adafruit_GFX.h>    // Adafruit Grafik-Bibliothek wird benötigt "Adafruit GFX Library"
+#include <Adafruit_ST7735.h> // Adafruit ST7735-Bibliothek wird benötigt "Adafruit ST7735 and ST7789 Library"
 
 // Sensor: Libraries
 #include <Adafruit_Sensor.h>
