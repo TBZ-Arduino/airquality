@@ -71,7 +71,10 @@ void setup()
  // Sensor
  Serial.begin(9600);
 
- while (!Serial);
+ // Unklar was nachfolgende Zeile macht
+ // TFT funktioniert aber teilweise nur, wenn diese Zeile auskommentiert ist
+ //while (!Serial);
+
  Serial.println(F("BME680 test"));
  
  if (!bme.begin()) {
@@ -89,19 +92,26 @@ void setup()
 void loop()
 {
  // TFT
- tft.setCursor(7,1); //Setze Position
- tft.setTextSize(2); //Schriftgröße einstellen
- tft.print("Arduin2"); //Text ausgeben
-
- tft.setCursor(15,30); //Setze Position
+ tft.fillScreen(ST7735_BLACK);
+ 
+ tft.setCursor(7,0); //Setze Position
  tft.setTextSize(1); //Schriftgröße einstellen
- tft.print("1.8 TFT LCD"); //Text ausgeben
+ tft.print(bme.temperature); //Text ausgeben
 
- tft.setCursor(7,45); //Setze Position
- tft.setTextSize(2); //Schriftgröße einstellen
- tft.print("ST7735"); //Text ausgeben
+ tft.setCursor(7,10);
+ tft.setTextSize(1);
+ tft.print(bme.pressure);
+
+ tft.setCursor(7,20);
+ tft.setTextSize(1);
+ tft.print(bme.humidity);
+
+ tft.setCursor(7,30);
+ tft.setTextSize(1);
+ tft.print(bme.gas_resistance / 1000.0);
+ 
  delay(250); //Wartet 0,25 Sekunden
-
+  
  // Sensor
  if (! bme.performReading()) {
   Serial.println("Failed to perform reading :(");
