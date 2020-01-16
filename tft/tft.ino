@@ -15,7 +15,7 @@ void loop()
 {
  tft.setCursor(7,1); //Setze Position
  tft.setTextSize(3); //Schriftgröße einstellen
- tft.print("Yuuhu!"); //Text ausgeben
+ tft.print("Test!"); //Text ausgeben
 
  tft.setCursor(15,30); //Setze Position
  tft.setTextSize(1); //Schriftgröße einstellen
