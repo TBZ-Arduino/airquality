@@ -177,7 +177,7 @@ void loop()
 
  Serial.println();
  printCurrentNet();
- delay(2000);
+ delay(5000);
 }
 
 //Void functions
