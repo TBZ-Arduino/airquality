@@ -243,7 +243,7 @@ void sendPacket() {
   Serial.println("Sending UDP packet...");
   Serial.println(intfluxdbPort);
 
-  udp.beginPacket(infuxdbHost, intfluxdbPort);
+  udp.beginPacket(influxdbHost, influxdbPort);
   udp.print(line);
   udp.endPacket();
 }
