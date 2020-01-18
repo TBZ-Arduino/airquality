@@ -47,6 +47,7 @@
 //WiFi: Libraries
 #include <WiFiNINA.h>
 #include "arduino_secrets.h"
+#include <WiFiUDP.h> //necessary to send UDP packet
 
 // TFT: Variablen
 #define TFT_PIN_CS 0         // Arduino-Pin an Display CS
@@ -70,6 +71,11 @@ Adafruit_BME680 bme(BME_CS); // hardware SPI
 char ssid[] = SECRET_SSID;        // your network SSID (name)
 char pass[] = SECRET_PASS;    // your network password (use for WPA, or use as key for WEP)
 int status = WL_IDLE_STATUS;     // the Wifi radio's status
+
+//influxDB settings
+byte infuxdbHost[] = {10, 0, 0, 1};
+int intfluxdbPort = 8888;
+WiFiUDP udp; //Library for udp packets
 
 void setup()
 {
@@ -127,6 +133,9 @@ void setup()
   printWifiData();
 }
 
+//Variables outside of loop
+String line;
+
 void loop()
 {
  // TFT
@@ -177,6 +186,7 @@ void loop()
 
  Serial.println();
  printCurrentNet();
+ sendPacket();
  delay(5000);
 }
 
@@ -229,6 +239,14 @@ void printMacAddress(byte mac[]) {
     }
   }
   Serial.println();
+}
+
+void sendPacket() {
+  line = "temperature value=22";
+  Serial.println("Sending UDP packet...");
+  udp.beginPacket(infuxdbHost, intfluxdbPort);
+  udp.print(line);
+  udp.endPacket();
 }
 
 //Float functions
