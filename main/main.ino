@@ -245,7 +245,7 @@ float getHumidity() {
 }
 
 float getGas() {
-  bme.gas_resistance / 1000.0;
+  return bme.gas_resistance / 1000.0;
 }
 
 float getAltitude() {
