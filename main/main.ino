@@ -72,9 +72,6 @@ char ssid[] = SECRET_SSID;        // your network SSID (name)
 char pass[] = SECRET_PASS;    // your network password (use for WPA, or use as key for WEP)
 int status = WL_IDLE_STATUS;     // the Wifi radio's status
 
-//influxDB settings
-byte infuxdbHost[] = {10, 0, 0, 1};
-int intfluxdbPort = 8888;
 WiFiUDP udp; //Library for udp packets
 
 void setup()
@@ -244,6 +241,8 @@ void printMacAddress(byte mac[]) {
 void sendPacket() {
   line = "temperature value=22";
   Serial.println("Sending UDP packet...");
+  Serial.println(intfluxdbPort);
+
   udp.beginPacket(infuxdbHost, intfluxdbPort);
   udp.print(line);
   udp.endPacket();
