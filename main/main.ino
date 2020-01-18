@@ -134,19 +134,19 @@ void loop()
 
  tft.setCursor(7,0); //Setze Position
  tft.setTextSize(1); //Schriftgröße einstellen
- tft.print(bme.temperature); //Text ausgeben
+ tft.print(getTemperature()); //Text ausgeben
 
  tft.setCursor(7,10);
  tft.setTextSize(1);
- tft.print(bme.pressure);
+ tft.print(getPressure());
 
  tft.setCursor(7,20);
  tft.setTextSize(1);
- tft.print(bme.humidity);
+ tft.print(getHumidity());
 
  tft.setCursor(7,30);
  tft.setTextSize(1);
- tft.print(bme.gas_resistance / 1000.0);
+ tft.print(getGas());
 
  delay(250); //Wartet 0,25 Sekunden
 
@@ -156,23 +156,23 @@ void loop()
   return;
  }
  Serial.print("Temperature = ");
- Serial.print(bme.temperature);
+ Serial.print(getTemperature());
  Serial.println(" *C");
 
  Serial.print("Pressure = ");
- Serial.print(bme.pressure / 100.0);
+ Serial.print(getPressure());
  Serial.println(" hPa");
 
  Serial.print("Humidity = ");
- Serial.print(bme.humidity);
+ Serial.print(getHumidity());
  Serial.println(" %");
 
  Serial.print("Gas = ");
- Serial.print(bme.gas_resistance / 1000.0);
+ Serial.print(getGas());
  Serial.println(" KOhms");
 
  Serial.print("Approx. Altitude = ");
- Serial.print(bme.readAltitude(SEALEVELPRESSURE_HPA));
+ Serial.print(getAltitude());
  Serial.println(" m");
 
  Serial.println();
@@ -180,6 +180,7 @@ void loop()
  delay(2000);
 }
 
+//Void functions
 void printWifiData() {
   // print your board's IP address:
   IPAddress ip = WiFi.localIP();
@@ -228,4 +229,25 @@ void printMacAddress(byte mac[]) {
     }
   }
   Serial.println();
+}
+
+//Float functions
+float getTemperature() {
+  return bme.temperature;
+}
+
+float getPressure() {
+  return bme.pressure / 100.0;
+}
+
+float getHumidity() {
+  return bme.humidity;
+}
+
+float getGas() {
+  bme.gas_resistance / 1000.0;
+}
+
+float getAltitude() {
+  return bme.readAltitude(SEALEVELPRESSURE_HPA);
 }
