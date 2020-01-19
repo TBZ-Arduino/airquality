@@ -11,7 +11,6 @@
  - Markus Ritzmann <markus.ritzmann@edu.tbz.ch>
 
  Im Unterricht von Christoph Jäger.
- Einzelne Code Snippets stammen aus der jeweilig offiziellen Librarie Dokumentation.
 
 */
 
@@ -30,6 +29,8 @@
 
  Für den TFT Display:
  - TFT Built-in by Arduino, Adafruit
+ - Adafruit GFX Library
+ - Adafruit ST7735 and ST7789 Library
 
 */
 
@@ -62,7 +63,7 @@
 
 // Standard Wert aus Dokumentation war 1013.25. Anhand https://kachelmannwetter.com/ch/messwerte/zuerich/luftdruck-qnh/20200119-1500z.html
 // and die Schweiz (Zürich) angepasst. Muss anhand Wetter und Ort angepasst werden.
-#define SEALEVELPRESSURE_HPA (1035)
+#define SEALEVELPRESSURE_HPA (1036.5)
 
 // TFT: Einstellungen
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_PIN_CS, TFT_PIN_DC, TFT_PIN_RST);
@@ -144,7 +145,7 @@ void loop()
  // Damit werden die Werte gelöscht und nicht überschrieben (was zu seltsamen effekten führt)
  tft.fillScreen(ST7735_BLACK);
 
- String Line1  = "Temparatur:";
+ String Line1  = "Temperatur:";
  String Line2  = String(getTemperature()) + "*C";
  
  String Line3  = "Luftdruck:";
