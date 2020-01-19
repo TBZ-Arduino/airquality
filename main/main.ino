@@ -239,13 +239,20 @@ void printMacAddress(byte mac[]) {
 }
 
 void sendPacket() {
-  line = "temperature value=22";
+  line = "Temperature=22";
   Serial.println("Sending UDP packet...");
-  Serial.println(intfluxdbPort);
 
+/**
   udp.beginPacket(influxdbHost, influxdbPort);
   udp.print(line);
   udp.endPacket();
+**/
+  if(udp.beginPacket(influxdbHost,influxdbPort) == 1) {
+  udp.print(line);
+  if(udp.endPacket() == 1) Serial.println("endPacket ok");
+  else Serial.println("endPacket fail");
+}
+else Serial.println("beginPacket fail");
 }
 
 //Float functions
