@@ -59,7 +59,10 @@
 #define BME_MISO 10
 #define BME_MOSI 8
 #define BME_CS 7
-#define SEALEVELPRESSURE_HPA (1013.25)
+
+// Standard Wert aus Dokumentation war 1013.25. Anhand https://kachelmannwetter.com/ch/messwerte/zuerich/luftdruck-qnh/20200119-1500z.html
+// and die Schweiz (Zürich) angepasst. Muss anhand Wetter und Ort angepasst werden.
+#define SEALEVELPRESSURE_HPA (1035)
 
 // TFT: Einstellungen
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_PIN_CS, TFT_PIN_DC, TFT_PIN_RST);
