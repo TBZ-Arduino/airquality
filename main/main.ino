@@ -3,7 +3,7 @@
  TBZ HF - IG1
  ============
 
- Version: 13.01.2020
+ Version: 21.01.2020
 
  Autoren:
  - Senti Laurin <laurin.senti@edu.tbz.ch>
@@ -81,6 +81,13 @@ const String strInfluxDbServer = influxdbServer; //Convert to String
 const String strInfluxDbPort = String(influxdbPort); //Convert to String
 void setup()
 {
+
+ // Sets the Digital Pin as output
+ pinMode(2, OUTPUT); // Tongeber
+ pinMode(3, OUTPUT); // LED Rot
+ pinMode(4, OUTPUT); // LED Gelb
+ pinMode(5, OUTPUT); // LED Grün
+
  // TFT
  tft.initR(INITR_GREENTAB); // Initialisierung der Bibliothek
  tft.fillScreen(ST7735_BLACK); // Färbt Hintergund Schwarz
@@ -140,6 +147,7 @@ String line;
 
 void loop()
 {
+
  // =========
  // TFT
  // =========
@@ -245,7 +253,35 @@ void loop()
  setData();
 }
 
-//Void functions
+// =========
+// Void functions
+// =========
+
+// Status OK
+float statusOk() {
+  digitalWrite(5, HIGH);
+}
+
+// Status Warnung
+float statusWarning() {
+  digitalWrite(4, HIGH);
+}
+
+// Status Kritisch
+float statusCritical() {
+  digitalWrite(3, HIGH); // LED
+  digitalWrite(2, HIGH); // Tongeber
+}
+
+// Setzt Ausgaben zurück
+float statusReset() {
+  digitalWrite(5, LOW); // LED Grün
+  digitalWrite(4, LOW); // LED Gelb
+  digitalWrite(3, LOW); // LED Rot
+  digitalWrite(2, LOW); // Tongeber
+}
+
+
 void printWifiData() {
   // print your board's IP address:
   IPAddress ip = WiFi.localIP();
@@ -349,8 +385,10 @@ void setData() {
   //we have to reset the buffer at the end of loop
   memset(buf, '\0', influxdbBufferSize);
 }
+// =========
+// Float functions
+// =========
 
-//Float functions
 float getTemperature() {
   return bme.temperature;
 }
