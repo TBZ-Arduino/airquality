@@ -1,10 +1,10 @@
 //WiFi settings
-#define SECRET_SSID "4arduino"
-#define SECRET_PASS "12345678900"
+#define SECRET_SSID "4arduino";
+#define SECRET_PASS "12345678900";
 //influxdb settings
-#define INFLUXDB_HOST “influxdb.example.org"
-influx.setBucket(“myBucket");
-influx.setVersion(2);
-influx.setOrg(“myOrg");
-influx.setPort(9999);
-influx.setToken(“myToken");
+char influxdbServer[] = "10.0.0.1";
+int influxdbPort = 9999;
+const int influxdbBufferSize = 2048;
+const String influxdbOrgId = "0rg1d";
+const String influxdbBucketName = "arduino";
+const String influxdbAuthToken = "AB12AuthToken==";
