@@ -48,7 +48,6 @@
 //WiFi: Libraries
 #include <WiFiNINA.h>
 #include "arduino_secrets.h"
-#include <InfluxDb.h>
 
 // TFT: Variablen
 #define TFT_PIN_CS 0         // Arduino-Pin an Display CS
@@ -76,6 +75,10 @@ char ssid[] = SECRET_SSID;        // your network SSID (name)
 char pass[] = SECRET_PASS;    // your network password (use for WPA, or use as key for WEP)
 int status = WL_IDLE_STATUS;     // the Wifi radio's status
 
+WiFiClient client; //For HTTP requests to send data to influxDB
+char buf[influxdbBufferSize] = {'\0'};
+const String strInfluxDbServer = influxdbServer; //Convert to String
+const String strInfluxDbPort = String(influxdbPort); //Convert to String
 void setup()
 {
 
@@ -246,6 +249,8 @@ void loop()
  Serial.println();
  printCurrentNet();
  delay(5000);
+ //printCurrentNet();
+ setData();
 }
 
 // =========
@@ -327,6 +332,59 @@ void printMacAddress(byte mac[]) {
   Serial.println();
 }
 
+void sendData(char* data, int influxdbBufferSize) {
+  if (client.connect(influxdbServer, influxdbPort)) { //if connected to server
+    //String strHostHeader = "\"Host: "+strInfluxDbServer+":"+strInfluxDbPort+"\"";
+    //Serial.println(strHostHeader);
+    Serial.println("connected");
+    client.println("POST /api/v2/write?org="+influxdbOrgId+"&bucket="+influxdbBucketName+"&precision=s HTTP/1.1");
+    client.println("Host: "+strInfluxDbServer+":"+strInfluxDbPort+"");
+    client.println("Authorization: Token "+influxdbAuthToken);
+    client.println("Content-Type: application/x-www-form-urlencoded");
+    client.println("Connection: close");
+    client.print("Content-Length: ");
+    client.println(influxdbBufferSize);
+    client.println();
+    client.println(data);
+    client.stop();
+  }
+  else {
+    Serial.println("Connection failed");
+  }
+}
+
+void setData() {
+  //this will be number of chars written to buffer, return value of sprintf
+  int numChars = 0;
+  //First of all we need to add the name of measurement to beginning of the buffer
+  numChars = sprintf(buf, "sensor,");
+
+  //tag should have an space at the end
+  numChars += sprintf(&buf[numChars], "sensor-id=1 ");
+  int i = 1;
+  /*//after tags, comes the values!
+  numChars += sprintf(&buf[numChars], "temperature=23,");
+  numChars += sprintf(&buf[numChars], "pressure="+getPressure()+",");
+  numChars += sprintf(&buf[numChars], "humidity="+getHumidity()+",");
+  numChars += sprintf(&buf[numChars], "gas="+getGas()+",");
+  numChars += sprintf(&buf[numChars], "altitude="getAltitude());
+*/
+
+  numChars += sprintf(&buf[numChars], "temperature=%.2f,", i);
+  numChars += sprintf(&buf[numChars], "HUMIDITY=%.2f,", i * 1.03);
+  numChars += sprintf(&buf[numChars], "LIGHT=%.2f", i * 10.5);
+
+
+  //Print the buffer on the serial line to see how it looks
+  Serial.print("Sending following dataset to InfluxDB: ");
+  Serial.println(buf);
+
+  //send to InfluxDB
+  sendData(buf, numChars);
+
+  //we have to reset the buffer at the end of loop
+  memset(buf, '\0', influxdbBufferSize);
+}
 // =========
 // Float functions
 // =========
