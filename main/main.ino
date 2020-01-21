@@ -1,36 +1,33 @@
 /*
 
- TBZ HF - IG1
- ============
+  TBZ HF - IG1
+  ============
 
- Version: 21.01.2020
+  Version: 21.01.2020
 
- Autoren:
- - Senti Laurin <laurin.senti@edu.tbz.ch>
- - Severin Steiner <severin.steiner@edu.tbz.ch>
- - Markus Ritzmann <markus.ritzmann@edu.tbz.ch>
+  Autoren:
+  - Senti Laurin <laurin.senti@edu.tbz.ch>
+  - Severin Steiner <severin.steiner@edu.tbz.ch>
+  - Markus Ritzmann <markus.ritzmann@edu.tbz.ch>
 
- Im Unterricht von Christoph Jäger.
+  Im Unterricht von Christoph Jäger.
 
-*/
+  Abhängigkeiten
+  ==============
 
-/*
- Abhängigkeiten
- ==============
+  Installieren via "Tools -> Manage Libraries"
 
- Installieren via "Tools -> Manage Libraries"
+  Für den Sensor:
+  - Adafruit BME680 Library by Adafruit
+  - Adafruit Unified Sensor by Adafruit
 
- Für den Sensor:
- - Adafruit BME680 Library by Adafruit
- - Adafruit Unified Sensor by Adafruit
+  Für das WLAN:
+  - WiFiNNA by Arduino
 
- Für das WLAN:
- - WiFiNNA by Arduino
-
- Für den TFT Display:
- - TFT Built-in by Arduino, Adafruit
- - Adafruit GFX Library
- - Adafruit ST7735 and ST7789 Library
+  Für den TFT Display:
+  - TFT Built-in by Arduino, Adafruit
+  - Adafruit GFX Library
+  - Adafruit ST7735 and ST7789 Library
 
 */
 
@@ -79,41 +76,41 @@ WiFiClient client; //For HTTP requests to send data to influxDB
 char buf[influxdbBufferSize] = {'\0'};
 const String strInfluxDbServer = influxdbServer; //Convert to String
 const String strInfluxDbPort = String(influxdbPort); //Convert to String
-void setup()
-{
 
- // Sets the Digital Pin as output
- pinMode(2, OUTPUT); // Tongeber
- pinMode(3, OUTPUT); // LED Rot
- pinMode(4, OUTPUT); // LED Gelb
- pinMode(5, OUTPUT); // LED Grün
+void setup() {
 
- // TFT
- tft.initR(INITR_GREENTAB); // Initialisierung der Bibliothek
- tft.fillScreen(ST7735_BLACK); // Färbt Hintergund Schwarz
+  // Sets the Digital Pin as output
+  pinMode(2, OUTPUT); // Tongeber
+  pinMode(3, OUTPUT); // LED Rot
+  pinMode(4, OUTPUT); // LED Gelb
+  pinMode(5, OUTPUT); // LED Grün
 
- // Sensor
- Serial.begin(9600);
+  // TFT
+  tft.initR(INITR_GREENTAB); // Initialisierung der Bibliothek
+  tft.fillScreen(ST7735_BLACK); // Färbt Hintergund Schwarz
 
- // Unklar was nachfolgende Zeile macht
- // TFT funktioniert aber teilweise nur, wenn diese Zeile auskommentiert ist
- //while (!Serial);
+  // Sensor
+  Serial.begin(9600);
 
- Serial.println(F("BME680 test"));
+  // Unklar was nachfolgende Zeile macht
+  // TFT funktioniert aber teilweise nur, wenn diese Zeile auskommentiert ist
+  //while (!Serial);
 
- if (!bme.begin()) {
-  Serial.println("Could not find a valid BME680 sensor, check wiring!");
-  while (1);
- }
+  Serial.println(F("BME680 test"));
 
- bme.setTemperatureOversampling(BME680_OS_8X);
- bme.setHumidityOversampling(BME680_OS_2X);
- bme.setPressureOversampling(BME680_OS_4X);
- bme.setIIRFilterSize(BME680_FILTER_SIZE_3);
- bme.setGasHeater(320, 150); // 320*C for 150 ms
+  if (!bme.begin()) {
+    Serial.println("Could not find a valid BME680 sensor, check wiring!");
+    while (1);
+  }
 
- //WiFi Verbindung aufbauen
- // check for the WiFi module:
+  bme.setTemperatureOversampling(BME680_OS_8X);
+  bme.setHumidityOversampling(BME680_OS_2X);
+  bme.setPressureOversampling(BME680_OS_4X);
+  bme.setIIRFilterSize(BME680_FILTER_SIZE_3);
+  bme.setGasHeater(320, 150); // 320*C for 150 ms
+
+  //WiFi Verbindung aufbauen
+  // check for the WiFi module:
   if (WiFi.status() == WL_NO_MODULE) {
     Serial.println("Communication with WiFi module failed!");
     // don't continue
@@ -145,112 +142,111 @@ void setup()
 //Variables outside of loop
 String line;
 
-void loop()
-{
+void loop() {
 
- // =========
- // TFT
- // =========
+  // =========
+  // TFT
+  // =========
 
- // Überschreibt den TFT mit einer Farbe.
- // Damit werden die Werte gelöscht und nicht überschrieben (was zu seltsamen effekten führt)
- tft.fillScreen(ST7735_BLACK);
+  // Überschreibt den TFT mit einer Farbe.
+  // Damit werden die Werte gelöscht und nicht überschrieben (was zu seltsamen effekten führt)
+  tft.fillScreen(ST7735_BLACK);
 
- String Line1  = "Temperatur:";
- String Line2  = String(getTemperature()) + "*C";
- 
- String Line3  = "Luftdruck:";
- String Line4  = String(getPressure()) + "hPa";
- 
- String Line5  = "Luftfeuchtigkeit:";
- String Line6  = String(getHumidity()) + "%";
- 
- String Line7  = "Gas:";
- String Line8  = String(getGas()) + "KOhm";
- 
- String Line9  = "Hoehe:";
- String Line10 = String(getAltitude()) + "m";
+  String Line1  = "Temperatur:";
+  String Line2  = String(getTemperature()) + "*C";
 
- // Gibt Text aus
- tft.setCursor(7,0);             // Setze Position
- tft.setTextSize(1);             // Schriftgröße einstellen
- tft.print(Line1);               // Text ausgeben
+  String Line3  = "Luftdruck:";
+  String Line4  = String(getPressure()) + "hPa";
 
- tft.setCursor(7,10);
- tft.setTextSize(2);
- tft.print(Line2);
- 
+  String Line5  = "Luftfeuchtigkeit:";
+  String Line6  = String(getHumidity()) + "%";
 
- tft.setCursor(7,30);
- tft.setTextSize(1);
- tft.print(Line3);
+  String Line7  = "Gas:";
+  String Line8  = String(getGas()) + "KOhm";
 
- tft.setCursor(7,40);
- tft.setTextSize(2);
- tft.print(Line4);
- 
+  String Line9  = "Hoehe:";
+  String Line10 = String(getAltitude()) + "m";
 
- tft.setCursor(7,60);
- tft.setTextSize(1);
- tft.print(Line5);
+  // Gibt Text aus
+  tft.setCursor(7, 0);            // Setze Position
+  tft.setTextSize(1);             // Schriftgröße einstellen
+  tft.print(Line1);               // Text ausgeben
 
- tft.setCursor(7,70);
- tft.setTextSize(2);
- tft.print(Line6);
+  tft.setCursor(7, 10);
+  tft.setTextSize(2);
+  tft.print(Line2);
 
 
- tft.setCursor(7,90);
- tft.setTextSize(1);
- tft.print(Line7);
+  tft.setCursor(7, 30);
+  tft.setTextSize(1);
+  tft.print(Line3);
 
- tft.setCursor(7,100);
- tft.setTextSize(2);
- tft.print(Line8);
+  tft.setCursor(7, 40);
+  tft.setTextSize(2);
+  tft.print(Line4);
 
 
- tft.setCursor(7,120);
- tft.setTextSize(1);
- tft.print(Line9);
+  tft.setCursor(7, 60);
+  tft.setTextSize(1);
+  tft.print(Line5);
 
- tft.setCursor(7,130);
- tft.setTextSize(2);
- tft.print(Line10);
+  tft.setCursor(7, 70);
+  tft.setTextSize(2);
+  tft.print(Line6);
 
- delay(250); // Wartet 0,25 Sekunden
 
- // =========
- // Sensor
- // =========
- 
- if (! bme.performReading()) {
-  Serial.println("Failed to perform reading :(");
-  return;
- }
- Serial.print("Temperature = ");
- Serial.print(getTemperature());
- Serial.println(" *C");
+  tft.setCursor(7, 90);
+  tft.setTextSize(1);
+  tft.print(Line7);
 
- Serial.print("Pressure = ");
- Serial.print(getPressure());
- Serial.println(" hPa");
+  tft.setCursor(7, 100);
+  tft.setTextSize(2);
+  tft.print(Line8);
 
- Serial.print("Humidity = ");
- Serial.print(getHumidity());
- Serial.println(" %");
 
- Serial.print("Gas = ");
- Serial.print(getGas());
- Serial.println(" KOhms");
+  tft.setCursor(7, 120);
+  tft.setTextSize(1);
+  tft.print(Line9);
 
- Serial.print("Approx. Altitude = ");
- Serial.print(getAltitude());
- Serial.println(" m");
+  tft.setCursor(7, 130);
+  tft.setTextSize(2);
+  tft.print(Line10);
 
- Serial.println();
- printCurrentNet();
- delay(5000);
- //printCurrentNet();
- setData();
+  delay(250); // Wartet 0,25 Sekunden
+
+  // =========
+  // Sensor
+  // =========
+
+  if (! bme.performReading()) {
+    Serial.println("Failed to perform reading :(");
+    return;
+  }
+  Serial.print("Temperature = ");
+  Serial.print(getTemperature());
+  Serial.println(" *C");
+
+  Serial.print("Pressure = ");
+  Serial.print(getPressure());
+  Serial.println(" hPa");
+
+  Serial.print("Humidity = ");
+  Serial.print(getHumidity());
+  Serial.println(" %");
+
+  Serial.print("Gas = ");
+  Serial.print(getGas());
+  Serial.println(" KOhms");
+
+  Serial.print("Approx. Altitude = ");
+  Serial.print(getAltitude());
+  Serial.println(" m");
+
+  Serial.println();
+  printCurrentNet();
+  delay(5000);
+  //printCurrentNet();
+  setData();
 }
 
 // =========
@@ -280,7 +276,6 @@ float statusReset() {
   digitalWrite(3, LOW); // LED Rot
   digitalWrite(2, LOW); // Tongeber
 }
-
 
 void printWifiData() {
   // print your board's IP address:
@@ -337,9 +332,9 @@ void sendData(char* data, int influxdbBufferSize) {
     //String strHostHeader = "\"Host: "+strInfluxDbServer+":"+strInfluxDbPort+"\"";
     //Serial.println(strHostHeader);
     Serial.println("connected");
-    client.println("POST /api/v2/write?org="+influxdbOrgId+"&bucket="+influxdbBucketName+"&precision=s HTTP/1.1");
-    client.println("Host: "+strInfluxDbServer+":"+strInfluxDbPort+"");
-    client.println("Authorization: Token "+influxdbAuthToken);
+    client.println("POST /api/v2/write?org=" + influxdbOrgId + "&bucket=" + influxdbBucketName + "&precision=s HTTP/1.1");
+    client.println("Host: " + strInfluxDbServer + ":" + strInfluxDbPort + "");
+    client.println("Authorization: Token " + influxdbAuthToken);
     client.println("Content-Type: application/x-www-form-urlencoded");
     client.println("Connection: close");
     client.print("Content-Length: ");
@@ -363,12 +358,12 @@ void setData() {
   numChars += sprintf(&buf[numChars], "sensor-id=1 ");
   int i = 1;
   /*//after tags, comes the values!
-  numChars += sprintf(&buf[numChars], "temperature=23,");
-  numChars += sprintf(&buf[numChars], "pressure="+getPressure()+",");
-  numChars += sprintf(&buf[numChars], "humidity="+getHumidity()+",");
-  numChars += sprintf(&buf[numChars], "gas="+getGas()+",");
-  numChars += sprintf(&buf[numChars], "altitude="getAltitude());
-*/
+    numChars += sprintf(&buf[numChars], "temperature=23,");
+    numChars += sprintf(&buf[numChars], "pressure="+getPressure()+",");
+    numChars += sprintf(&buf[numChars], "humidity="+getHumidity()+",");
+    numChars += sprintf(&buf[numChars], "gas="+getGas()+",");
+    numChars += sprintf(&buf[numChars], "altitude="getAltitude());
+  */
 
   numChars += sprintf(&buf[numChars], "temperature=%.2f,", i);
   numChars += sprintf(&buf[numChars], "HUMIDITY=%.2f,", i * 1.03);
