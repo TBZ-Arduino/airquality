@@ -339,9 +339,11 @@ void setData() {
     numChars += sprintf(&buf[numChars], "altitude="getAltitude());
   */
 
-  numChars += sprintf(&buf[numChars], "temperature=%.2f,", i);
-  numChars += sprintf(&buf[numChars], "HUMIDITY=%.2f,", i * 1.03);
-  numChars += sprintf(&buf[numChars], "LIGHT=%.2f", i * 10.5);
+  numChars += sprintf(&buf[numChars], "temperature=%.2f,", getTemperature());
+  numChars += sprintf(&buf[numChars], "pressure=%.2f,", getPressure());
+  numChars += sprintf(&buf[numChars], "humidity=%.2f,", getHumidity());
+  numChars += sprintf(&buf[numChars], "gas=%.2f,", getGas());
+  numChars += sprintf(&buf[numChars], "altitude=%.2f", getAltitude());
 
 
   //Print the buffer on the serial line to see how it looks
