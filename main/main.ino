@@ -195,6 +195,7 @@ void loop() {
     Serial.println("Failed to perform reading :(");
     return;
   }
+  /*
   Serial.print("Temperature = ");
   Serial.print(getTemperature());
   Serial.println(" *C");
@@ -214,10 +215,10 @@ void loop() {
   Serial.print("Approx. Altitude = ");
   Serial.print(getAltitude());
   Serial.println(" m");
+  */
 
   Serial.println();
-  printCurrentNet();
-  delay(5000);
+  delay(15000);
   //printCurrentNet();
   setData();
 }
