@@ -218,7 +218,7 @@ void loop() {
   */
 
   Serial.println();
-  delay(15000);
+  delay(3000);
   //printCurrentNet();
   setData();
 }
