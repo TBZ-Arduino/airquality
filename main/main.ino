@@ -84,6 +84,12 @@ float floatHumidity;
 float floatGas;
 float floatAltitude;
 
+//For the output logic, these will be set to 0 for OK, 1 for warning and 2 for critical
+int intTemperatureState;
+int intPressureState;
+int intHumidityState;
+int intGasState;
+
 void setup() {
 
   // Sets the Digital Pin as output
@@ -120,6 +126,7 @@ void loop() {
   setSensorData();
   setDisplay();
   setData();
+  setOutput();
 
   delay(3000);
   //printCurrentNet();
@@ -374,6 +381,89 @@ void setGas() {
 
 void setAltitude() {
   floatAltitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
+}
+
+void setOutput() {
+  setOutputTemperature();
+  setOutputPressure();
+  setOutputHumidity();
+  setOutputGas();
+  statusReset(); //set all output to LOW
+
+  if ( intTemperatureState == 2 || intPressureState == 2 || intGasState == 2 ) { //if any value is critical
+    statusCritical();
+  }
+
+  else if ( intTemperatureState == 0 && intPressureState == 0 && intHumidityState == 0 && intGasState == 0 ) { //if all values are ok
+    statusOk();
+  }
+
+  else { //else show warning
+    statusWarning();
+  }
+}
+
+void setOutputTemperature() {
+  if ( floatTemperature < 16 || floatTemperature > 29 ) { //set critical
+    intTemperatureState = 2;
+    Serial.println("Temperature critical");
+  }
+
+  else if ( floatTemperature >= 20 && floatTemperature <= 24) { //set ok
+    intTemperatureState = 0;
+    Serial.println("Temperature OK");
+  }
+
+  else { //set warning
+    intTemperatureState = 1;
+    Serial.println("Temperature warning");
+  }
+}
+
+void setOutputPressure() {
+  if ( floatPressure > 30000 ) { //set critical
+    intPressureState = 2;
+    Serial.println("Pressure critical");
+  }
+
+  else if ( floatPressure >= 533.3 && floatPressure <= 1026.3 ) { //set ok
+    intPressureState = 0;
+    Serial.println("Pressure OK");
+  }
+
+  else { //set warning
+    intPressureState = 1;
+    Serial.println("Pressure warning");
+  }
+}
+
+void setOutputHumidity() {
+  if ( floatHumidity <= 40 || floatHumidity >= 60 ) { //set warning
+    intHumidityState = 1;
+    Serial.println("Humidity warning");
+  }
+
+  else { //set ok
+    intHumidityState = 0;
+    Serial.println("Humidity OK");
+  }
+}
+
+void setOutputGas() {
+  if ( floatGas > 150) { //set ok
+    intGasState = 0;
+    Serial.println("Gas OK");
+  }
+
+  else if ( floatGas >= 100 && floatGas <= 150) {//set warning
+    intGasState = 1;
+    Serial.println("Gas warning");
+  }
+
+  else { //set critical
+    intGasState = 2;
+    Serial.println("Gas critical");
+  }
 }
 
 // =========
