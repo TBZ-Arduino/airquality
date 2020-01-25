@@ -77,6 +77,13 @@ char buf[influxdbBufferSize] = {'\0'};
 const String strInfluxDbServer = influxdbServer; //Convert to String
 const String strInfluxDbPort = String(influxdbPort); //Convert to String
 
+//Define globally used variables outside of scope
+float floatTemperature;
+float floatPressure;
+float floatHumidity;
+float floatGas;
+float floatAltitude;
+
 void setup() {
 
   // Sets the Digital Pin as output
@@ -110,17 +117,14 @@ void setup() {
 String line;
 
 void loop() {
-
+  setSensorData();
   setDisplay();
 
   // =========
   // Sensor
   // =========
 
-  if (! bme.performReading()) {
-    Serial.println("Failed to perform reading on sensor:(");
-    return;
-  }
+
 
   Serial.println();
   delay(3000);
@@ -347,26 +351,58 @@ void setDisplay() {
   tft.print(Line10);
 }
 
+void setSensorData() {
+  if (! bme.performReading()) {
+    Serial.println("Failed to perform reading on sensor:(");
+    return;
+  }
+  setTemperature();
+  setPressure();
+  setHumidity();
+  setGas();
+  setAltitude();
+}
+
+void setTemperature() {
+  floatTemperature = bme.temperature;
+}
+
+void setPressure() {
+  floatPressure = bme.pressure / 100.0; // in hPa
+}
+
+void setHumidity() {
+  floatHumidity = bme.humidity;
+}
+
+void setGas() {
+  floatGas = bme.gas_resistance / 1000.0; // in kOhm
+}
+
+void setAltitude() {
+  floatAltitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
+}
+
 // =========
 // Float functions
 // =========
 
 float getTemperature() {
-  return bme.temperature;
+  return floatTemperature;
 }
 
 float getPressure() {
-  return bme.pressure / 100.0;
+  return floatPressure;
 }
 
 float getHumidity() {
-  return bme.humidity;
+  return floatHumidity;
 }
 
 float getGas() {
-  return bme.gas_resistance / 1000.0;
+  return floatGas;
 }
 
 float getAltitude() {
-  return bme.readAltitude(SEALEVELPRESSURE_HPA);
+  return floatAltitude;
 }
