@@ -119,17 +119,10 @@ String line;
 void loop() {
   setSensorData();
   setDisplay();
+  setData();
 
-  // =========
-  // Sensor
-  // =========
-
-
-
-  Serial.println();
   delay(3000);
   //printCurrentNet();
-  setData();
 }
 
 // =========
