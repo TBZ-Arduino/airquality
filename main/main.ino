@@ -111,75 +111,7 @@ String line;
 
 void loop() {
 
-  // =========
-  // TFT
-  // =========
-
-  // Überschreibt den TFT mit einer Farbe.
-  // Damit werden die Werte gelöscht und nicht überschrieben (was zu seltsamen effekten führt)
-  tft.fillScreen(ST7735_BLACK);
-
-  String Line1  = "Temperatur:";
-  String Line2  = String(getTemperature()) + "*C";
-
-  String Line3  = "Luftdruck:";
-  String Line4  = String(getPressure()) + "hPa";
-
-  String Line5  = "Luftfeuchtigkeit:";
-  String Line6  = String(getHumidity()) + "%";
-
-  String Line7  = "Gas:";
-  String Line8  = String(getGas()) + "KOhm";
-
-  String Line9  = "Hoehe:";
-  String Line10 = String(getAltitude()) + "m";
-
-  // Gibt Text aus
-  tft.setCursor(7, 0);            // Setze Position
-  tft.setTextSize(1);             // Schriftgröße einstellen
-  tft.print(Line1);               // Text ausgeben
-
-  tft.setCursor(7, 10);
-  tft.setTextSize(2);
-  tft.print(Line2);
-
-
-  tft.setCursor(7, 30);
-  tft.setTextSize(1);
-  tft.print(Line3);
-
-  tft.setCursor(7, 40);
-  tft.setTextSize(2);
-  tft.print(Line4);
-
-
-  tft.setCursor(7, 60);
-  tft.setTextSize(1);
-  tft.print(Line5);
-
-  tft.setCursor(7, 70);
-  tft.setTextSize(2);
-  tft.print(Line6);
-
-
-  tft.setCursor(7, 90);
-  tft.setTextSize(1);
-  tft.print(Line7);
-
-  tft.setCursor(7, 100);
-  tft.setTextSize(2);
-  tft.print(Line8);
-
-
-  tft.setCursor(7, 120);
-  tft.setTextSize(1);
-  tft.print(Line9);
-
-  tft.setCursor(7, 130);
-  tft.setTextSize(2);
-  tft.print(Line10);
-
-  delay(250); // Wartet 0,25 Sekunden
+  setDisplay();
 
   // =========
   // Sensor
@@ -345,6 +277,76 @@ void setWifi() {
   //printCurrentNet();
   //printWifiData();
 }
+
+void setDisplay() {
+  // =========
+  // TFT
+  // =========
+
+
+  tft.fillScreen(ST7735_BLACK); // Fill display with black to not have strange behaviour when overwriting displayed text
+
+  String Line1  = "Temperatur:";
+  String Line2  = String(getTemperature()) + "*C";
+
+  String Line3  = "Luftdruck:";
+  String Line4  = String(getPressure()) + "hPa";
+
+  String Line5  = "Luftfeuchtigkeit:";
+  String Line6  = String(getHumidity()) + "%";
+
+  String Line7  = "Gas:";
+  String Line8  = String(getGas()) + "KOhm";
+
+  String Line9  = "Hoehe:";
+  String Line10 = String(getAltitude()) + "m";
+
+  // Gibt Text aus
+  tft.setCursor(7, 0);            // Setze Position
+  tft.setTextSize(1);             // Schriftgröße einstellen
+  tft.print(Line1);               // Text ausgeben
+
+  tft.setCursor(7, 10);
+  tft.setTextSize(2);
+  tft.print(Line2);
+
+
+  tft.setCursor(7, 30);
+  tft.setTextSize(1);
+  tft.print(Line3);
+
+  tft.setCursor(7, 40);
+  tft.setTextSize(2);
+  tft.print(Line4);
+
+
+  tft.setCursor(7, 60);
+  tft.setTextSize(1);
+  tft.print(Line5);
+
+  tft.setCursor(7, 70);
+  tft.setTextSize(2);
+  tft.print(Line6);
+
+
+  tft.setCursor(7, 90);
+  tft.setTextSize(1);
+  tft.print(Line7);
+
+  tft.setCursor(7, 100);
+  tft.setTextSize(2);
+  tft.print(Line8);
+
+
+  tft.setCursor(7, 120);
+  tft.setTextSize(1);
+  tft.print(Line9);
+
+  tft.setCursor(7, 130);
+  tft.setTextSize(2);
+  tft.print(Line10);
+}
+
 // =========
 // Float functions
 // =========
