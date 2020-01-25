@@ -86,17 +86,11 @@ void setup() {
   pinMode(5, OUTPUT); // LED Grün
 
   // TFT
-  tft.initR(INITR_GREENTAB); // Initialisierung der Bibliothek
-  tft.fillScreen(ST7735_BLACK); // Färbt Hintergund Schwarz
+  tft.initR(INITR_GREENTAB); // Initialise TFT library
+  tft.fillScreen(ST7735_BLACK); // Fill display with black
 
   // Sensor
   Serial.begin(9600);
-
-  // Unklar was nachfolgende Zeile macht
-  // TFT funktioniert aber teilweise nur, wenn diese Zeile auskommentiert ist
-  //while (!Serial);
-
-  Serial.println(F("BME680 test"));
 
   if (!bme.begin()) {
     Serial.println("Could not find a valid BME680 sensor, check wiring!");
@@ -192,30 +186,9 @@ void loop() {
   // =========
 
   if (! bme.performReading()) {
-    Serial.println("Failed to perform reading :(");
+    Serial.println("Failed to perform reading on sensor:(");
     return;
   }
-  /*
-  Serial.print("Temperature = ");
-  Serial.print(getTemperature());
-  Serial.println(" *C");
-
-  Serial.print("Pressure = ");
-  Serial.print(getPressure());
-  Serial.println(" hPa");
-
-  Serial.print("Humidity = ");
-  Serial.print(getHumidity());
-  Serial.println(" %");
-
-  Serial.print("Gas = ");
-  Serial.print(getGas());
-  Serial.println(" KOhms");
-
-  Serial.print("Approx. Altitude = ");
-  Serial.print(getAltitude());
-  Serial.println(" m");
-  */
 
   Serial.println();
   delay(3000);
@@ -303,9 +276,9 @@ void printMacAddress(byte mac[]) {
 
 void sendData(char* data, int influxdbBufferSize) {
   if (client.connect(influxdbServer, influxdbPort)) { //if connected to server
-    //String strHostHeader = "\"Host: "+strInfluxDbServer+":"+strInfluxDbPort+"\"";
-    //Serial.println(strHostHeader);
-    Serial.println("connected");
+    //Print the buffer on the serial line to see how it looks
+    Serial.print("Sending following dataset to InfluxDB: ");
+    Serial.println(buf);
     client.println("POST /api/v2/write?org=" + influxdbOrgId + "&bucket=" + influxdbBucketName + "&precision=s HTTP/1.1");
     client.println("Host: " + strInfluxDbServer + ":" + strInfluxDbPort + "");
     client.println("Authorization: Token " + influxdbAuthToken);
@@ -318,7 +291,7 @@ void sendData(char* data, int influxdbBufferSize) {
     client.stop();
   }
   else {
-    Serial.println("Connection failed");
+    Serial.println("Connection to server failed");
   }
 }
 
@@ -330,25 +303,12 @@ void setData() {
 
   //tag should have an space at the end
   numChars += sprintf(&buf[numChars], "sensor-id=1 ");
-  int i = 1;
-  /*//after tags, comes the values!
-    numChars += sprintf(&buf[numChars], "temperature=23,");
-    numChars += sprintf(&buf[numChars], "pressure="+getPressure()+",");
-    numChars += sprintf(&buf[numChars], "humidity="+getHumidity()+",");
-    numChars += sprintf(&buf[numChars], "gas="+getGas()+",");
-    numChars += sprintf(&buf[numChars], "altitude="getAltitude());
-  */
 
   numChars += sprintf(&buf[numChars], "temperature=%.2f,", getTemperature());
   numChars += sprintf(&buf[numChars], "pressure=%.2f,", getPressure());
   numChars += sprintf(&buf[numChars], "humidity=%.2f,", getHumidity());
   numChars += sprintf(&buf[numChars], "gas=%.2f,", getGas());
   numChars += sprintf(&buf[numChars], "altitude=%.2f", getAltitude());
-
-
-  //Print the buffer on the serial line to see how it looks
-  Serial.print("Sending following dataset to InfluxDB: ");
-  Serial.println(buf);
 
   //send to InfluxDB
   sendData(buf, numChars);
@@ -382,8 +342,8 @@ void setWifi() {
   }
   // you're connected now, so print out the data:
   Serial.print("You're connected to the network");
-  printCurrentNet();
-  printWifiData();
+  //printCurrentNet();
+  //printWifiData();
 }
 // =========
 // Float functions
